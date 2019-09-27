@@ -2,7 +2,15 @@
   <div class="zhanye-tree">
     <div class="header"><el-button @click="addTreeItem"><i class="el-icon-plus" /></el-button></div>
     <div class="container">
-      <cell />
+
+      <cell v-for="(items, key) of treeData" :key="key" :items="items">
+        <template slot-scope="slotProps">
+          <template v-if="slotProps.items.children">
+            <cell v-for="(item, k) of slotProps.items.children" :key="k" :items="item" />
+          </template>
+        </template>
+      </cell>
+
     </div>
   </div>
 </template>
@@ -15,8 +23,11 @@ export default {
     Cell
   },
   computed: {
-    treeData2: function() {
-      return this.$store.state.department.treeData;
+    treeData: function() {
+      const data = this.initTreeData();
+      console.log('tt', data);
+      // return this.$store.state.department.treeData.filter(v => v && v.puuid === this.puuid);
+      return data;
     }
   },
   created() {
@@ -29,6 +40,16 @@ export default {
     },
     save() {
       console.log('departmentName', this.departmentName)
+    },
+    initTreeData(puuid = '0') {
+      const d = this.$store.state.department.treeData.filter(v => v && v.puuid === puuid);
+      return d && d.map((o) => {
+        const children = this.initTreeData(o.uuid);
+        if (children) {
+          o.children = children;
+        }
+        return o;
+      });
     }
   }
 }

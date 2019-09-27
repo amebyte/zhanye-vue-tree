@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div v-for="(item, key) of treeData" :key="key" class="cell">
-      <edit-cell v-if="item.isEdit" :item="item" />
-      <item-cell v-else :item="item" />
+    <div class="cell">
+      <edit-cell v-if="items.isEdit" :item="items" />
+      <item-cell v-else :item="items" />
     </div>
+    <slot :items="items" />
   </div>
 </template>
 <script>
@@ -16,15 +17,16 @@ export default {
     ItemCell
   },
   props: {
-    puuid: {
-      type: String,
-      default: '0'
+    items: {
+      type: Object,
+      default: null
     }
   },
   computed: {
-    treeData: function() {
-      return this.$store.state.department.treeData.filter(v => v && v.puuid === this.puuid);
-    }
+
+  },
+  methods: {
+
   }
 }
 </script>
