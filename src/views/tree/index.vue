@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     addTreeItem() {
-      const newTreeItem = { puuid: '0', uuid: generateUUID(), departmentName: null, isAdding: true, isEdit: true };
+      const newTreeItem = { puuid: '0', uuid: generateUUID(), departmentName: null, isAdding: true, isEdit: true, isVisible: true, disabled: true };
       this.$store.dispatch('department/addTreeItem', newTreeItem)
     },
     save() {
@@ -68,14 +68,16 @@ export default {
       const d = list.filter(v => v && v.puuid === puuid);
       return d && d.map((o) => {
         const children = this.initTreeData(list, o.uuid, dept + 1);
-        // o.loop = Math.random();
-        this.$set(o, 'dept', dept);
-        // o.dept = dept;
-        if (children) {
-          this.$set(o, 'children', children);
-          // o.children = children;
+        const newData = {};
+        // this.$set(o, 'dept', dept);
+        newData.dept = dept;
+        if (children.length > 0) {
+        //   this.$set(o, 'children', children);
+        //   this.$set(o, 'disabled', false);
+          newData.children = children;
+          newData.disabled = false;
         }
-        return o;
+        return { ...o, ...newData };
       });
     }
   }

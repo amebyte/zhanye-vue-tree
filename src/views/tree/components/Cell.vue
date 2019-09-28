@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="paternalCell">
     <div class="cell">
       <edit-cell v-if="items.isEdit" :item="items" />
       <item-cell v-else :item="items" />
     </div>
-    <template v-if="children">
-      <cell v-for="(item, k) of children" :key="k" :items="item" />
+    <template v-if="items.children">
+      <div v-show="items.isVisible" class="childrenCell">
+        <cell v-for="(item, k) of items.children" :key="k" :items="item" />
+      </div>
     </template>
   </div>
 </template>
@@ -25,10 +27,10 @@ export default {
     }
   },
   computed: {
-    children: function() {
-      console.log('items.children', this.items.children);
-      return this.items.children;
-    }
+    // children: function() {
+    //   console.log('items.children', this.items.children);
+    //   return this.items.children;
+    // }
   },
   created() {
     console.log('this.items', this.items, 'dept', this.items.dept);

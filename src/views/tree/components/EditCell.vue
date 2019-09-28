@@ -2,7 +2,7 @@
   <section class="edit-cell">
     <span class="symbol" :style="symbolStyleMarginLeft" />
     <div class="input-box">
-      <el-input v-model="item.departmentName" placeholder="请输入内容" />
+      <el-input v-model="departmentName" placeholder="请输入名称" />
       <el-button type="primary" class="save-btn" @click="save">确定</el-button>
     </div>
     <el-button class="cancel-btn" @click="cancel">取消</el-button>
@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-      departmentName: '52222'
+      departmentName: null
     }
   },
   computed: {
@@ -27,13 +27,40 @@ export default {
       return 'margin-left:' + this.item.dept * 30 + 'px';
     }
   },
+  created() {
+    this.departmentName = this.item.departmentName;
+  },
   methods: {
     save() {
       console.log('item', this.item);
-      this.item.isEdit = false;
+      if (this.departmentName === null || this.departmentName && this.departmentName.replace(/(^\s*)|(\s*$)/g, '') === '') {
+        this.$message({
+          type: 'warning',
+          message: '请输入名称！'
+        });
+        return;
+      }
+      const editTreeTtem = { ...this.item, isEdit: false, departmentName: this.departmentName.replace(/(^\s*)|(\s*$)/g, '') };
+      this.$store.dispatch('department/checkRepeatName', editTreeTtem).then((isRepeatName) => {
+        if (isRepeatName) {
+          this.$message({
+            type: 'warning',
+            message: '名称有重复！'
+          });
+        } else {
+          this.$store.dispatch('department/editTreeTtem', editTreeTtem);
+        }
+      });
     },
     cancel() {
-      this.item.isEdit = false;
+      if (this.item.isAdding) {
+        console.log('isAdding');
+        this.$store.dispatch('department/delTreeItem', this.item);
+      } else {
+        console.log('isEdit');
+        const editTreeTtem = { ...this.item, isEdit: false };
+        this.$store.dispatch('department/editTreeTtem', editTreeTtem);
+      }
     }
   }
 }

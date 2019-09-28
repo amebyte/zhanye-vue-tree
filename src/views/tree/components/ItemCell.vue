@@ -3,7 +3,7 @@
     <span class="symbol" :style="symbolStyleMarginLeft" />
     <span class="tree-name">{{ item.departmentName }}</span>
     <div class="handle">
-      <el-button class="style-none"><i class="el-icon-caret-top" /></el-button>
+      <el-button class="style-none" :disabled="item.disabled" @click="onVisible"><i :class="isFold ? 'el-icon-caret-bottom' : 'el-icon-caret-top'" /></el-button>
       <el-button class="style-none" @click="add"><i class="el-icon-plus" /></el-button>
       <el-button class="style-none" @click="edit"><i class="el-icon-edit" /></el-button>
       <el-button class="style-none" @click="del"><i class="el-icon-delete" /></el-button>
@@ -23,24 +23,46 @@ export default {
   computed: {
     symbolStyleMarginLeft: function() {
       return 'margin-left:' + this.item.dept * 30 + 'px';
+    },
+    isFold: function() {
+      console.log('this.itemttt', this.item);
+      return !!(this.item.isVisible && this.item.children && this.item.children.length > 0);
     }
   },
   methods: {
+    onVisible() {
+    //   this.item.isVisible = !this.item.isVisible;
+    //   console.log('this.item.isVisible', this.item.isVisible);
+      const editTreeTtem = { ...this.item, isVisible: !this.item.isVisible };
+      this.$store.dispatch('department/editTreeTtem', editTreeTtem);
+    },
     add() {
-      const newTreeItem = { puuid: this.item.uuid, uuid: generateUUID(), departmentName: null, isAdding: true, isEdit: true };
-      this.$store.dispatch('department/addTreeItem', newTreeItem)
+      const editTreeTtem = { ...this.item, isVisible: true };
+      this.$store.dispatch('department/editTreeTtem', editTreeTtem);
+
+      const newTreeItem = { puuid: this.item.uuid, uuid: generateUUID(), departmentName: null, isAdding: true, isEdit: true, isVisible: true, disabled: true };
+      this.$store.dispatch('department/addTreeItem', newTreeItem);
     },
     edit() {
-      // const editTreeTtem = { ...this.item, isEdit: true };
-      // this.$store.dispatch('department/editTreeTtem', editTreeTtem)
-      this.item.isEdit = true;
+      const editTreeTtem = { ...this.item, isEdit: true };
+      this.$store.dispatch('department/editTreeTtem', editTreeTtem);
+      // this.item.isEdit = true;
+      // this.$set(this.item, 'isEdit', true);
     },
     del() {
+      if (this.item.children && this.item.children.length > 0) {
+        this.$message({
+          type: 'warning',
+          message: '请先删除子栏目！'
+        });
+        return;
+      }
       this.$confirm('此操作将删除该信息, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        // this.$store.dispatch('department/delTreeItem', this.item);
         this.$message({
           type: 'success',
           message: '删除成功!'
