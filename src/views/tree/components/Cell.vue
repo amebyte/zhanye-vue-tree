@@ -4,7 +4,9 @@
       <edit-cell v-if="items.isEdit" :item="items" />
       <item-cell v-else :item="items" />
     </div>
-    <slot :items="items" />
+    <template v-if="children">
+      <cell v-for="(item, k) of children" :key="k" :items="item" />
+    </template>
   </div>
 </template>
 <script>
@@ -23,7 +25,13 @@ export default {
     }
   },
   computed: {
-
+    children: function() {
+      console.log('items.children', this.items.children);
+      return this.items.children;
+    }
+  },
+  created() {
+    console.log('this.items', this.items, 'dept', this.items.dept);
   },
   methods: {
 

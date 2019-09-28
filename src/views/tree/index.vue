@@ -3,13 +3,7 @@
     <div class="header"><el-button @click="addTreeItem"><i class="el-icon-plus" /></el-button></div>
     <div class="container">
 
-      <cell v-for="(items, key) of treeData" :key="key" :items="items">
-        <template slot-scope="slotProps">
-          <template v-if="slotProps.items.children">
-            <cell v-for="(item, k) of slotProps.items.children" :key="k" :items="item" />
-          </template>
-        </template>
-      </cell>
+      <cell v-for="(items, key) of treeData" :key="key" :items="items" />
 
     </div>
   </div>
@@ -22,6 +16,11 @@ export default {
   components: {
     Cell
   },
+  data() {
+    return {
+      // treeData: null
+    }
+  },
   computed: {
     treeData: function() {
       const data = this.initTreeData();
@@ -30,8 +29,14 @@ export default {
       return data;
     }
   },
+  mounted() {
+    // console.log('departbbb', this.$store.state);
+    // const treeData = this.initTreeData();
+    // console.log('treeData', treeData);
+    // this.treeData = treeData;
+  },
   created() {
-    console.log('departbbb', this.$store.state);
+
   },
   methods: {
     addTreeItem() {
@@ -41,10 +46,11 @@ export default {
     save() {
       console.log('departmentName', this.departmentName)
     },
-    initTreeData(puuid = '0') {
+    initTreeData(puuid = '0', dept = 1) {
       const d = this.$store.state.department.treeData.filter(v => v && v.puuid === puuid);
       return d && d.map((o) => {
-        const children = this.initTreeData(o.uuid);
+        const children = this.initTreeData(o.uuid, dept + 1);
+        o.dept = dept;
         if (children) {
           o.children = children;
         }

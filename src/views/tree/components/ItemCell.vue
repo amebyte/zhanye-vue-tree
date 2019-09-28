@@ -1,6 +1,6 @@
 <template>
   <div class="item-cell">
-    <span class="symbol" />
+    <span class="symbol" :style="symbolStyleMarginLeft" />
     <span class="tree-name">{{ item.departmentName }}</span>
     <div class="handle">
       <el-button class="style-none"><i class="el-icon-caret-top" /></el-button>
@@ -18,6 +18,11 @@ export default {
     item: {
       type: Object,
       default: undefined
+    }
+  },
+  computed: {
+    symbolStyleMarginLeft: function() {
+      return 'margin-left:' + this.item.dept * 30 + 'px';
     }
   },
   methods: {
