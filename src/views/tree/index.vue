@@ -18,16 +18,33 @@ export default {
   },
   data() {
     return {
-      // treeData: null
+      // treeData: this.initTreeData()
+      list: this.$store.state.department.treeData
     }
   },
   computed: {
     treeData: function() {
-      const data = this.initTreeData();
+      const data = this.initTreeData(this.list);
       console.log('tt', data);
       // return this.$store.state.department.treeData.filter(v => v && v.puuid === this.puuid);
       return data;
     }
+    // treeData: {
+    //   get: function() {
+    //     return this.initTreeData();
+    //   },
+    //   set: function(newVal) {
+    //     console.log('newVal', newVal);
+    //     this.treeData = this.initTreeData();
+    //   }
+    // }
+  },
+  watch: {
+    list: function(oldVal, newVal) {
+      console.log('old', oldVal, 'newVal', newVal);
+    },
+    immediate: true,
+    deep: true
   },
   mounted() {
     // console.log('departbbb', this.$store.state);
@@ -46,13 +63,17 @@ export default {
     save() {
       console.log('departmentName', this.departmentName)
     },
-    initTreeData(puuid = '0', dept = 1) {
-      const d = this.$store.state.department.treeData.filter(v => v && v.puuid === puuid);
+    initTreeData(list, puuid = '0', dept = 1) {
+      // const d = this.$store.state.department.treeData.filter(v => v && v.puuid === puuid);
+      const d = list.filter(v => v && v.puuid === puuid);
       return d && d.map((o) => {
-        const children = this.initTreeData(o.uuid, dept + 1);
-        o.dept = dept;
+        const children = this.initTreeData(list, o.uuid, dept + 1);
+        // o.loop = Math.random();
+        this.$set(o, 'dept', dept);
+        // o.dept = dept;
         if (children) {
-          o.children = children;
+          this.$set(o, 'children', children);
+          // o.children = children;
         }
         return o;
       });

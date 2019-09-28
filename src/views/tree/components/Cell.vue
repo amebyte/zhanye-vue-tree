@@ -33,6 +33,9 @@ export default {
   created() {
     console.log('this.items', this.items, 'dept', this.items.dept);
   },
+  beforeUpdate() {
+    console.log('beforeUpdate');
+  },
   methods: {
 
   }

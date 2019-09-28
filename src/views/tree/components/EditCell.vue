@@ -1,6 +1,6 @@
 <template>
   <section class="edit-cell">
-    <span class="symbol" />
+    <span class="symbol" :style="symbolStyleMarginLeft" />
     <div class="input-box">
       <el-input v-model="item.departmentName" placeholder="请输入内容" />
       <el-button type="primary" class="save-btn" @click="save">确定</el-button>
@@ -20,6 +20,11 @@ export default {
   data() {
     return {
       departmentName: '52222'
+    }
+  },
+  computed: {
+    symbolStyleMarginLeft: function() {
+      return 'margin-left:' + this.item.dept * 30 + 'px';
     }
   },
   methods: {

@@ -5,7 +5,7 @@
     <div class="handle">
       <el-button class="style-none"><i class="el-icon-caret-top" /></el-button>
       <el-button class="style-none" @click="add"><i class="el-icon-plus" /></el-button>
-      <el-button class="style-none"><i class="el-icon-edit" /></el-button>
+      <el-button class="style-none" @click="edit"><i class="el-icon-edit" /></el-button>
       <el-button class="style-none" @click="del"><i class="el-icon-delete" /></el-button>
     </div>
   </div>
@@ -29,6 +29,11 @@ export default {
     add() {
       const newTreeItem = { puuid: this.item.uuid, uuid: generateUUID(), departmentName: null, isAdding: true, isEdit: true };
       this.$store.dispatch('department/addTreeItem', newTreeItem)
+    },
+    edit() {
+      // const editTreeTtem = { ...this.item, isEdit: true };
+      // this.$store.dispatch('department/editTreeTtem', editTreeTtem)
+      this.item.isEdit = true;
     },
     del() {
       this.$confirm('此操作将删除该信息, 是否继续?', '提示', {
